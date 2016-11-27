@@ -1,0 +1,42 @@
+How to run test case
+folder path>npm run test-watch
+
+While testing async code, we have to pass done function as a parameter.
+Why because, if you did not pass the mocha or unit test framework assumes that testing is done and it returns value but it wont
+even test asserstion code.
+If we pass done function as a argument then mocha treat that , we are testing async code and it waits to execute 
+call function which we are passing and post the exection of done() then it will inform to mocha that go ahead and proces the test results.
+
+it('should test async code',(done)=>{
+    
+    asyncMethod(3,4,(sum)=>{
+        expect(sum).toBe(7).toBeA('number');
+        //mocha waits, till call back function execute
+        done();
+    })
+});
+
+
+SPIES:
+1. To test the pieace of code which making DB call or API call, it is really cumbersome and tedious job 
+so we are using SPIES to test these code. Means spies wont make DB or API call but it will give the results exactly like
+what expected from that code using fake mechanism 
+
+rewire npm module
+Easy dependency injection for node.js unit testing 
+rewire adds a special setter and getter to modules so you can modify their behaviour for better unit testing. 
+Thus your module behaves exactly the same in your test environment as under regular circumstances (except your modifications).
+
+Use of rewire in our app is that 
+HandleSignUp Method : which makes a call to DB operation 
+module.exports.handleSignUp =(email,password)=>{
+    db.saveUser({email,password});
+};
+SaveUser : Which is making DB operation 
+module.exports.saveUser=(user)=>{
+    console.log("Saving the user" ,user);
+};
+
+So spy "saveUser()" method in HandleSignUp() method we have to use rewire.
+rewire replaces db object from handleSignUp method to someother fake object;
+rewire help us for testing the code which has side effect , like handleSignUp()
